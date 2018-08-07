@@ -114,16 +114,16 @@ if resamplestr == '':
     resamplestr = 'near'
 if type == 'kmz':
     if zoomstr == '':
-        command = 'python "' + prefix + '/gdal2tiles-multiprocess.py" -r ' + resamplestr + ' --profile geodetic -w none -k "' + ofname + '.tif' + '" "' + ofname + '"'
+        command = 'python "' + prefix + '/gdal2tiles.py" -r ' + resamplestr + ' --profile geodetic -w none -k "' + ofname + '.tif' + '" "' + ofname + '"'
     else:
-        command = 'python "' + prefix + '/gdal2tiles-multiprocess.py" -r ' + resamplestr + ' --zoom "' + zoomstr + '" --profile geodetic -w none -k "' + ofname + '.tif' + '" "' + ofname + '"'
+        command = 'python "' + prefix + '/gdal2tiles.py" -r ' + resamplestr + ' --zoom "' + zoomstr + '" --profile geodetic -w none -k "' + ofname + '.tif' + '" "' + ofname + '"'
     print(command)
     subprocess.call(command, shell=True)
 elif type == 'mbtiles':
     if zoomstr == '':
-        command = 'python "' + prefix + '/gdal2tiles-multiprocess.py" -r ' + resamplestr + ' "' + ofname + '.tif' + '" "' + ofname + '"'
+        command = 'python "' + prefix + '/gdal2tiles.py" -r ' + resamplestr + ' "' + ofname + '.tif' + '" "' + ofname + '"'
     else:
-        command = 'python "' + prefix + '/gdal2tiles-multiprocess.py" -r ' + resamplestr + ' --zoom "' + zoomstr + '" "' + ofname + '.tif' + '" "' + ofname + '"'
+        command = 'python "' + prefix + '/gdal2tiles.py" -r ' + resamplestr + ' --zoom "' + zoomstr + '" "' + ofname + '.tif' + '" "' + ofname + '"'
     print(command)
     subprocess.call(command, shell=True)
 
