@@ -435,7 +435,7 @@ class Tiler():
             self.colormode_frame.grid()
    
     def qml2clr(self):
-        filename = tkfd.askopenfilename(initialdir=self.initialdir,title = "Select qml file",filetypes = (("qml files","*.qml*"),("all files","**")))
+        filename = tkfd.askopenfilename(initialdir=self.initialdir,title = "Select qml file")
         try: 
             qml2clr.qml2clr(filename)
             tkmb.showinfo("Success", "Created " + filename.replace('.qml','.clr')) 
@@ -443,7 +443,7 @@ class Tiler():
             tkmb.showinfo("Georeference Error", "There was a problem converting " + filename) 
                 
     def get_geo_info(self):
-        filename = tkfd.askopenfilename(initialdir=self.initialdir,title = "Select file",filetypes = (("Raster File Types",raster_file_types),("Vector File Types",vector_file_types),("all files","**")))
+        filename = tkfd.askopenfilename(initialdir=self.initialdir,title = "Select file")
         if '.tif' in filename: 
             try:
                 (ulx,uly,lrx,lry,pixelWidth,pixelHeight,epsg,epsg_success,proj4) = get_bounds.get_raster_info(filename)
@@ -500,7 +500,9 @@ class Tiler():
             execute = tkmb.askquestion("File Exists", 'The file ' + os.path.splitext(output_filename_var)[0] + '.tif exists in this location (this file will be overwritten!).  Do you want to continue?', icon='warning',default='no')
         
         if execute == 'yes':
-            if os.name == 'nt':
+            if sys.platform == "win32" or sys.platform == "win64":                # If windows
+                if not os.path.exists(os.path.dirname(os.path.realpath(__file__).replace('\\','/')) + '/Commands'):
+                    os.makedirs(os.path.dirname(os.path.realpath(__file__).replace('\\','/')) + '/Commands')
                 fname = os.path.dirname(os.path.realpath(__file__).replace('\\','/')) + '/Commands/' + datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S") + '.bat'
                 f1=open(fname, 'w+')
                 f1.write(self.command.get(1.0,tk.END))
@@ -509,7 +511,18 @@ class Tiler():
                 subprocess.Popen(fname, creationflags = subprocess.CREATE_NEW_CONSOLE)
                 time.sleep(1)
                 #os.remove(fname)
-            else:
+            elif sys.platform == "darwin":      # If mac
+                if not os.path.exists(os.path.dirname(os.path.realpath(__file__).replace('\\','/')) + '/Commands'):
+                    os.makedirs(os.path.dirname(os.path.realpath(__file__).replace('\\','/')) + '/Commands')
+                fname = os.path.dirname(os.path.realpath(__file__).replace('\\','/')) + '/Commands/' + datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S") + '.sh'
+                f1=open(fname, 'w+')
+                f1.write('cd "$(dirname "$0")"\n')
+                f1.write(self.command.get(1.0,tk.END))
+                f1.close()
+                print 'osascript -e \'tell application "Terminal" to do script "sh ' + fname + '"\''
+                os.system('osascript -e \'tell application "Terminal" to do script "sh ' + fname + '"\'')
+                time.sleep(1)
+            elif sys.platform == "linux" or sys.platform == "linux2":   # If linux
                 cmd = "xterm -hold -e '" + self.command.get(1.0,tk.END) + "'"
                 print(cmd)
                 subprocess.Popen(cmd,shell=True)
@@ -527,7 +540,7 @@ class Tiler():
         self.res_check.set(1)
         
     def open_input_dialog(self):
-        filename = tkfd.askopenfilename(initialdir=self.initialdir,title = "Select file",filetypes = (("Raster File Types",raster_file_types),("all files","**")))
+        filename = tkfd.askopenfilename(initialdir=self.initialdir,title = "Select file")
         if filename != '':
             self.initialdir = os.path.dirname(filename)
         self.input_filename_var.set(filename)
@@ -539,28 +552,28 @@ class Tiler():
         self.output_dirname_var.set(filename)
         
     def open_clr_dialog(self):
-        filename = tkfd.askopenfilename(initialdir=self.initialdir,title = "Select file",filetypes = (("clr files","*.clr*"),("all files","**")))
+        filename = tkfd.askopenfilename(initialdir=self.initialdir,title = "Select file")
         if filename != '':
             self.initialdir = os.path.dirname(filename)
         self.clr_filename_var.set(filename)
         self.clr_check.set(1)
         
     def open_shp_dialog(self):
-        filename = tkfd.askopenfilename(initialdir=self.initialdir,title = "Select file",filetypes = (("Vector File Types",vector_file_types),("all files","**")))
+        filename = tkfd.askopenfilename(initialdir=self.initialdir,title = "Select file")
         if filename != '':
             self.initialdir = os.path.dirname(filename)
         self.shp_filename_var.set(filename)
         self.shp_check.set(1)
         
     def open_bg_dialog(self):
-        filename = tkfd.askopenfilename(initialdir=self.initialdir,title = "Select file",filetypes = (("Raster File Types",raster_file_types),("all files","**")))
+        filename = tkfd.askopenfilename(initialdir=self.initialdir,title = "Select file")
         if filename != '':
             self.initialdir = os.path.dirname(filename)
         self.bg_filename_var.set(filename)
         self.bg_check.set(1)
         
     def open_kmz_overlay_dialog(self):
-        filename = tkfd.askopenfilename(initialdir=self.initialdir,title = "Select file",filetypes = (("Image File Types",image_file_types),("all files","**")))
+        filename = tkfd.askopenfilename(initialdir=self.initialdir,title = "Select file")
         if filename != '':
             self.initialdir = os.path.dirname(filename)
         self.kmz_overlay_filename_var.set(filename)
