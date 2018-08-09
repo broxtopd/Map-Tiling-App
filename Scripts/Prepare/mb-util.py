@@ -77,6 +77,7 @@ def optimize_database(cur):
     logger.debug('analyzing db')
     cur.execute("""ANALYZE;""")
     logger.debug('cleaning db')
+    cur.isolation_level = None
     cur.execute("""VACUUM;""")
 
 def compression_do(cur, con, chunk):
