@@ -519,7 +519,6 @@ class Tiler():
                 f1.write('cd "$(dirname "$0")"\n')
                 f1.write(self.command.get(1.0,tk.END))
                 f1.close()
-                print 'osascript -e \'tell application "Terminal" to do script "sh ' + fname + '"\''
                 os.system('osascript -e \'tell application "Terminal" to do script "sh ' + fname + '"\'')
                 time.sleep(1)
             elif sys.platform == "linux" or sys.platform == "linux2":   # If linux
